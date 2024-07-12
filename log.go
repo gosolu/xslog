@@ -54,3 +54,15 @@ func AppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context {
 	sas = append(sas, attrs...)
 	return context.WithValue(ctx, ctxAttrKey, sas)
 }
+
+type replaceFn func(group string, attr slog.Attr) slog.Attr
+
+// AttrReplaces bunch a group of replace functions into a single ReplaceAttr function
+func AttrReplaces(functions ...replaceFn) replaceFn {
+	return func(group string, attr slog.Attr) slog.Attr {
+		for _, fn := range functions {
+			attr = fn(group, attr)
+		}
+		return attr
+	}
+}
