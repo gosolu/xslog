@@ -11,7 +11,15 @@ type contextHandler struct {
 	slog.Handler
 }
 
+// NewHandler create a new slog Handler with context support.
+//
+// Deprecated: use UseContext instead
 func NewHandler(handler slog.Handler) slog.Handler {
+	return &contextHandler{handler}
+}
+
+// UseContext support add context attributes
+func UseContext(handler slog.Handler) slog.Handler {
 	return &contextHandler{handler}
 }
 

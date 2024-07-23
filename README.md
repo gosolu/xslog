@@ -16,8 +16,11 @@ import (
 )
 
 func main() {
-    handler := xslog.NewHandler(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{}))
+    handler := xslog.UseContext(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{}))
     slog.SetDefault(slog.New(handler))
+
+    ctx := context.Background()
+    slog.InfoContext(ctx, "Hi")
 }
 ```
 
