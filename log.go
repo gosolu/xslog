@@ -49,7 +49,11 @@ func (h *contextHandler) WithGroup(name string) slog.Handler {
 }
 
 // AppendAttrs append attributes into context and create a new context
-func AppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context {
+// Deprecated: Use AppendFields instead
+var AppendAttrs = ContextAppendAttrs
+
+// ContextAppendAttrs append attributes into context and create a new context
+func ContextAppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context {
 	var sas []slog.Attr
 	if val := ctx.Value(ctxAttrKey); val != nil {
 		if vs, ok := val.([]slog.Attr); ok {
@@ -65,8 +69,11 @@ func AppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context {
 
 type replaceFn func(group []string, attr slog.Attr) slog.Attr
 
-// AttrReplaces bunch a group of replace functions into a single ReplaceAttr function
-func AttrReplaces(functions ...replaceFn) replaceFn {
+// Deprecated: Use ReplaceAtrr instead
+var AttrReplaces = ReplaceAttr
+
+// ReplaceAttr bunch a group of replace functions into a single ReplaceAttr function
+func ReplaceAttr(functions ...replaceFn) replaceFn {
 	return func(group []string, attr slog.Attr) slog.Attr {
 		for _, fn := range functions {
 			attr = fn(group, attr)

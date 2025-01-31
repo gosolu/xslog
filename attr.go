@@ -7,8 +7,11 @@ import (
 	"strings"
 )
 
-// SimpleSource make log source shorter
-func SimpleSource(group []string, attr slog.Attr) slog.Attr {
+// Deprecated: Use AttrSimpleSource instead
+var SimpleSource = AttrSimpleSource
+
+// AttrSimpleSource make log source shorter
+func AttrSimpleSource(group []string, attr slog.Attr) slog.Attr {
 	key := attr.Key
 	if key != slog.SourceKey {
 		return attr
@@ -21,8 +24,11 @@ func SimpleSource(group []string, attr slog.Attr) slog.Attr {
 	return attr
 }
 
-// LowerLevel convert log level to lower
-func LowerLevel(group []string, attr slog.Attr) slog.Attr {
+// Deprecated: Use AttrLowerLevel instead
+var LowerLevel = AttrLowerLevel
+
+// AttrLowerLevel convert log level to lower
+func AttrLowerLevel(group []string, attr slog.Attr) slog.Attr {
 	if attr.Key != slog.LevelKey {
 		return attr
 	}
