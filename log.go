@@ -1,3 +1,4 @@
+// Package xslog contains some utilities for log/slog
 package xslog
 
 import (
@@ -11,14 +12,7 @@ type contextHandler struct {
 	slog.Handler
 }
 
-// NewHandler create a new slog Handler with context support.
-//
-// Deprecated: use UseContext instead
-func NewHandler(handler slog.Handler) slog.Handler {
-	return &contextHandler{handler}
-}
-
-// UseContext support add context attributes
+// UseContext create a new slog Handler with context support.
 func UseContext(handler slog.Handler) slog.Handler {
 	return &contextHandler{handler}
 }
@@ -48,10 +42,6 @@ func (h *contextHandler) WithGroup(name string) slog.Handler {
 	return &h2
 }
 
-// AppendAttrs append attributes into context and create a new context
-// Deprecated: Use AppendFields instead
-var AppendAttrs = ContextAppendAttrs
-
 // ContextAppendAttrs append attributes into context and create a new context
 func ContextAppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context {
 	var sas []slog.Attr
@@ -68,9 +58,6 @@ func ContextAppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context
 }
 
 type replaceFn func(group []string, attr slog.Attr) slog.Attr
-
-// Deprecated: Use ReplaceAtrr instead
-var AttrReplaces = ReplaceAttr
 
 // ReplaceAttr bunch a group of replace functions into a single ReplaceAttr function
 func ReplaceAttr(functions ...replaceFn) replaceFn {

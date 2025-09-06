@@ -7,9 +7,6 @@ import (
 	"strings"
 )
 
-// Deprecated: Use AttrSimpleSource instead
-var SimpleSource = AttrSimpleSource
-
 // AttrSimpleSource make log source shorter
 func AttrSimpleSource(group []string, attr slog.Attr) slog.Attr {
 	key := attr.Key
@@ -23,9 +20,6 @@ func AttrSimpleSource(group []string, attr slog.Attr) slog.Attr {
 	attr.Value = slog.StringValue(fmt.Sprintf("%s:%d", filepath.Base(src.File), src.Line))
 	return attr
 }
-
-// Deprecated: Use AttrLowerLevel instead
-var LowerLevel = AttrLowerLevel
 
 // AttrLowerLevel convert log level to lower
 func AttrLowerLevel(group []string, attr slog.Attr) slog.Attr {
