@@ -17,12 +17,26 @@ func UseContext(handler slog.Handler) slog.Handler {
 	return &contextHandler{handler}
 }
 
-type ctxKeyType struct{}
+type ctxAttrKey struct{}
+type ctxLevelKey struct{}
 
-var ctxAttrKey ctxKeyType
+// WithLogLevel set current context log level
+func WithLogLevel(ctx context.Context, level slog.Level) context.Context {
+	return context.WithValue(ctx, ctxLevelKey{}, level)
+}
+
+func (h *contextHandler) Enabled(ctx context.Context, level slog.Level) bool {
+	ctxLevel := ctx.Value(ctxLevelKey{})
+	if ctxLevel != nil {
+		if lvl, ok := ctxLevel.(slog.Level); ok {
+			return level >= lvl
+		}
+	}
+	return h.Handler.Enabled(ctx, level)
+}
 
 func (h *contextHandler) Handle(ctx context.Context, record slog.Record) error {
-	if val := ctx.Value(ctxAttrKey); val != nil {
+	if val := ctx.Value(ctxAttrKey{}); val != nil {
 		if attrs, ok := val.([]slog.Attr); ok {
 			record.AddAttrs(attrs...)
 		}
@@ -45,7 +59,7 @@ func (h *contextHandler) WithGroup(name string) slog.Handler {
 // ContextAppendAttrs append attributes into context and create a new context
 func ContextAppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context {
 	var sas []slog.Attr
-	if val := ctx.Value(ctxAttrKey); val != nil {
+	if val := ctx.Value(ctxAttrKey{}); val != nil {
 		if vs, ok := val.([]slog.Attr); ok {
 			sas = vs
 		}
@@ -54,7 +68,7 @@ func ContextAppendAttrs(ctx context.Context, attrs ...slog.Attr) context.Context
 		sas = make([]slog.Attr, 0, len(attrs))
 	}
 	sas = append(sas, attrs...)
-	return context.WithValue(ctx, ctxAttrKey, sas)
+	return context.WithValue(ctx, ctxAttrKey{}, sas)
 }
 
 type replaceFn func(group []string, attr slog.Attr) slog.Attr
